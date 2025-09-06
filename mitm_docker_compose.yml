@@ -1,0 +1,12 @@
+#example on setting up mitm on local container
+services:
+    mitmproxy:
+        image: mitmproxy/mitmproxy
+        tty: true
+        ports:
+          - "8086:8086"  # proxy                                                                                                            
+          - "8081:8081"  # web-interface          
+        volumes:
+          - ./mitmproxydata:/home/mitmproxy/.mitmproxy   
+        command: mitmweb --web-host 0.0.0.0 --no-web-open-browser -p 8086 --mode reverse:http://192.168.3.38:8083/
+        # restart: unless-stopped
