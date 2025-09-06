@@ -5,11 +5,17 @@ uv pip install openai
 uv pip install llama-index
 
 uv pip install llama-index-vector-stores-postgres
+
 uv pip install llama-index-readers-file
+
 uv pip install llama-index-embeddings-huggingface
-uv pip install 'markitdown[all]
+
+uv pip install 'markitdown[all]'
+
 uv pip install llama-index-embeddings-huggingface
+
 uv pip install llama-index-vector-stores-postgres
+
 
 raw json
 '''
