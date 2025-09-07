@@ -50,7 +50,7 @@ services:
     networks:
       - qdb
   vectdba:
-    image: pgvector/pgvector:0.8.0-pg17-trixie  # Prebuilt Postgres image with pgvector
+    image: pgvector/pgvector:0.8.1-pg17-trixie  # Prebuilt Postgres image with pgvector
     container_name: pgvectora
     ports:
       - "5431:5432"
