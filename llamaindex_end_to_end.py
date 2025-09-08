@@ -183,3 +183,12 @@ index = VectorStoreIndex.from_documents(docs, storage_context=storage_context, s
 query_engine = index.as_query_engine()
 
 print("end")
+
+# ---------------------------------------------
+#  as-is json send to embedding model
+# ---------------------------------------------
+# 
+# {
+#     "inputs": "Metadata: file_name=>super_secret_document.txt::category=>finance::author=>LlamaIndex::page_table=>abc\n-----\nContent: This is a super-customized document"
+# }
+# 
