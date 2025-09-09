@@ -7,6 +7,8 @@ docker compose file to create backend containers for a RAG system, the container
 2: Prostgres Database with pgvector extension
 3: Huggingface TEI Server to serve text embedding model
 4: EasyOCR container to serve OCR model
-5: 
+5: MinIO - s3 Compatiable storage
+
+
 
 

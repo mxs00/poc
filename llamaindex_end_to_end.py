@@ -86,7 +86,23 @@ class CustomPGVectorStore(PGVectorStore):
             conn.close()
 
 document = Document(
-    text="This is a super-customized document",
+    text="""Effectively tackling this project demands a wide array of skills and experience in AI models and advanced prompt engineering. No single AI model can handle the sheer variety within the birth certificate dataset or the immense volume of data requiring processing. Building such a complex pipeline necessitates expertise in data curation, fine-tuning, training, and hosting multiple AI models, all while operating within the constraints of limited GPU resources to ensure cost-effectiveness.
+Challenges	Accomplishments
+AI models are trained on vast datasets, but their performance suffers when they encounter unseen data. The significant variety present in birth certificate datasets poses a challenge because current models haven't been trained on such diverse information, leading to inaccurate text extraction.	Engineered advanced AI pipeline by integrating a diverse suite of eight leading AI models, including GPT-4o, Google Gemini, Microsoft Phi-4, DeepSeek, Qwen, RTDETR, Donut, and Tesseract.
+
+Additionally, further enhanced model performance by fine-tuning Donut and RTDETR specifically for high-accuracy classification and field extraction.
+
+These birth certificates pose a significant challenge, as even advanced AI models such as GPT-4o, Google Gemini, DeepSeek, and Qwen cannot accurately extract their data.	Developed a consensus-driven data extraction method, validating results only when multiple AI models produced identical outputs.
+Birth certificates dataset contains diverse form types and layouts. Further complicating matters, certificates that appear alike often contain subtle yet significant variations, particularly in their field numbering conventions.
+	
+    Optimized AI model performance by fine-tuning a document classification model for birth certificates and custom-training an RTDETR model to efficiently extract data from 12 different birth certificate forms and layouts.
+Extraction of birth certificates embedded within affidavits	Custom-trained an RT-DETR AI model for the precise extraction of birth certificates from diverse affidavit documents.
+Quality of scanned copies 	Optimized image quality by implementing deskewing techniques for scanned documents and cropping blank areas, leading to enhanced processing accuracy.
+Inconsistent font styles and varying image quality present in the documents. This variability directly impacts the accuracy of AI models, making it difficult for them to reliably parse and extract text.	Improved text extraction accuracy by segmenting birth certificates into individual fields, optimizing input for AI models which perform better with smaller, more focused images.
+Improving accuracy demands the power of large AI models, such as DeepSeek and Qwen, which in turn require high-end GPUs for effective operation. A significant hurdle, however, is the lack of available APIs for these advanced models.  	Utilized single A100 local GPU to process resulting in larger turnaround time. 
+Hand written text	A key remaining challenge is the accurate processing of handwritten text. This requires the development and fine-tuning of a specialized AI model, a capability not yet implemented.
+
+""",
     metadata={
         "file_name": "super_secret_document.txt",
         "category": "finance",
@@ -153,8 +169,8 @@ print(f"SENTENCE NODES :\n {nodes[0]}")
 
 Settings.llm = None
 Settings.embed_model = embed_model #OpenAIEmbedding(model="text-embedding-3-small")
-Settings.node_parser = SentenceSplitter(chunk_size=512, chunk_overlap=20)
-Settings.num_output = 512
+Settings.node_parser = SentenceSplitter(chunk_size=50, chunk_overlap=20)
+Settings.num_output = 50
 Settings.context_window = 3900
 
 # a vector store index only needs an embed model
