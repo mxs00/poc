@@ -166,6 +166,7 @@ vector_store = CustomPGVectorStore.from_params(
 for file_path in Path(r"D:\temp\rag\pptx").glob("*.pptx"):
     # new_path = Path("archive") / file_path.name
     # file_path.replace(new_path)
+    # # {'paged', 'elements', 'single'}`
     loader = UnstructuredPowerPointLoader(file_path,mode="elements")
     docs = loader.load()
 
