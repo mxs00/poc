@@ -33,6 +33,11 @@ from langchain.schema import Document
 from llama_index.core.embeddings import resolve_embed_model
 from llama_index.embeddings.huggingface import HuggingFaceInferenceAPIEmbedding 
 
+from llama_index.core.vector_stores.types import (
+    MetadataFilter,
+    MetadataFilters,
+)
+
 class CustomPGVectorStore(PGVectorStore):
     def __init__(self, connection_string=None, table_name="vectorstore", **kwargs):
         super().__init__(connection_string=connection_string, table_name=table_name, **kwargs)
@@ -137,11 +142,22 @@ vector_store = CustomPGVectorStore.from_params(
 
 
 
-# service_context = ServiceContext.from_defaults(embed_model=embed_model)
+# # service_context = ServiceContext.from_defaults(embed_model=embed_model)
 
 # storage_context = StorageContext.from_defaults(vector_store=vector_store)
-# index = VectorStoreIndex.from_documents(storage_context=storage_context, show_progress=True)
-# search_query_retriever = index.as_retriever(service_context=service_context, similarity_top_k=1)
+# new_index = VectorStoreIndex.from_documents(storage_context=storage_context, show_progress=True)
+# query_engine = new_index.as_query_engine()
+# response = query_engine.query("what are the project objectives")
+# print(response)
+# # search_query_retriever = index.as_retriever(service_context=service_context, similarity_top_k=1)
+
+filters = MetadataFilters(
+    filters=[
+        MetadataFilter(key="author", value="mats@timescale.com"),
+        MetadataFilter(key="author", value="sven@timescale.com"),
+    ],
+    condition="or",
+)
 
 query_str = "what are the project objectives"
 query_embedding = embed_model.get_query_embedding(query_str)
@@ -153,7 +169,10 @@ query_mode = "default"
 # query_mode = "hybrid"
 
 vector_store_query = VectorStoreQuery(
-    query_embedding=query_embedding, similarity_top_k=2, mode=query_mode
+    query_embedding=query_embedding, 
+    similarity_top_k=2, 
+    mode=query_mode,
+    filters=filters,
 )
 
 # returns a VectorStoreQueryResult
