@@ -2,7 +2,7 @@ import psycopg2
 import pandas as pd
 from dateutil import parser
 import locale
-
+ 
 #  using '/media/ms/DATA2/data/donut_bcerts/trained_model/m_10' categorised on Aprl 6, 2025
 def handle_multiple_dots(sval:str):
     dot_count = sval.count('.')    
