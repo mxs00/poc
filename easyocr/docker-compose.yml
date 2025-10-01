@@ -1,0 +1,89 @@
+services:
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant 
+    environment:
+      QDRANT__SERVICE__GRPC_PORT: 6334
+    ports:
+      - 6333:6333 # tcp
+      - 6334:6334 # grpc
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+    networks:
+      - qdb
+    restart: always
+
+  tei:
+    image: ghcr.io/huggingface/text-embeddings-inference
+    container_name: tei_q 
+    environment:
+      MODEL_ID: Qwen/Qwen3-Embedding-0.6B
+    ports:
+      - 8083:80 # tcp
+    volumes:
+      - /media/ms/soft/.cache/huggingface/:/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]  
+    networks:
+      - qdb
+    restart: always
+
+  eserv:
+    build:
+      context: ./easyapp
+    container_name: eserv
+    hostname: eserv
+    # environment:
+    #   MODEL: microsoft/Phi-3-vision-128k-instruct
+    ports:
+      - "8041:8041"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]  
+    networks:
+      - qdb
+  vectdba:
+    image: pgvector/pgvector:0.8.0-pg17-trixie  # Prebuilt Postgres image with pgvector
+    container_name: pgvectora
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: embedding_db
+    volumes:
+      - /media/ms/soft/docker/data/pgdata/:/var/lib/postgresql/data
+    networks:
+      - qdb    
+  miniox:
+    image: lazybit/minio
+    # image with admin ui from older release
+    command: server /data --console-address ":9090"
+    hostname: miniox
+    restart: always
+    ports:
+      - 9000:9000
+      - 9090:9090
+    volumes:
+      -  /media/ms/soft/docker/data/minio/:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    networks:
+      - qdb
+
+volumes:
+  qdrant_data:
+
+
+networks:
+  qdb:
