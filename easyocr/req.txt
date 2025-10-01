@@ -1,0 +1,8 @@
+#numpy
+easyocr
+python-dotenv
+opencv-python-headless
+argparse
+litserve
+python-multipart
+numpy<2.0
