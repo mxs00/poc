@@ -1,6 +1,7 @@
 
 # ref service context: https://medium.aiplanet.com/advanced-rag-using-llama-index-e06b00dc0ed8
 # ref document https://medium.com/@abul.aala.fareh/customizing-documents-in-llamaindex-357de97d3917
+# ref: https://www.sheshbabu.com/posts/fastapi-without-orm-getting-started-with-asyncpg 
 
 from llama_index.core import Document,SimpleDirectoryReader,ServiceContext,VectorStoreIndex
 from llama_index.core.schema import MetadataMode
