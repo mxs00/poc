@@ -1,0 +1,50 @@
+services:
+  #
+  # ref: https://dev.to/whchi/setting-up-tls-connection-for-containerized-postgresql-database-1kmh 
+  #
+  # 
+  # sudo chown 999:999 server.key
+  # sudo chmod 600 server.key
+  # sudo chown 999:999 /mnt/soft/docker/pgvector/certs/pgvector.cer
+  # sudo chmod 644 /mnt/soft/docker/pgvector/certs/pgvector.cer
+
+  vectdba:
+    image: pgvector/pgvector:0.8.0-pg17-trixie  # Prebuilt Postgres image with pgvector
+    container_name: pgvectora
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: embedding_db
+    volumes:
+      - /mnt/ms/soft/docker/data/pgdata/:/var/lib/postgresql/data
+      - /mnt/soft/docker/pgvector/certs/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf      
+      - /mnt/soft/docker/pgvector/certs/server.crt:/var/lib/postgresql/server.crt:ro
+      - /mnt/soft/docker/pgvector/certs/server.key:/var/lib/postgresql/server.key:ro      
+    command: postgres -c ssl=on -c ssl_cert_file='/var/lib/postgresql/server.crt' -c ssl_key_file='/var/lib/postgresql/server.key' -c listen_addresses='*'      
+    networks:
+      - qdb    
+  miniox:
+    image: lazybit/minio
+    # image with admin ui from older release
+    command: server /data --console-address ":9090"
+    hostname: miniox
+    restart: always
+    ports:
+      - 9000:9000
+      - 9090:9090
+    volumes:
+      -  /mnt/ms/soft/docker/data/minio/:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    networks:
+      - qdb
+
+# volumes:
+#   qdrant_data:
+
+
+networks:
+  qdb:
