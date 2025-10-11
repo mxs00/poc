@@ -1,7 +1,6 @@
 
 import boto3
 
-
 LOCAL_S3_PROXY_SERVICE_URL = 'http://192.168.3.164:9000'
 
 s3_client = boto3.client('s3',aws_access_key_id="EJmZZD0aTifI0CIqb0K6",
