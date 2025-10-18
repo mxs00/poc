@@ -20,6 +20,7 @@ ms@ms000:~$ cat /etc/subuid
 ms:100000:65536
 ms@ms000:~$ cat /etc/subgid
 ms:100000:65536
+$ grep $(whoami) /etc/subuid /etc/subgid
 
 //check inside container
 ps -ef 
@@ -33,6 +34,15 @@ lsns -t pid
 $ sudo usermod --add-subuids 200000-265536 --add-subgids 200000-265536 tux
 user.max_user_namespaces = 256004
 
+
+//----------------------------------
+// namespaces
+//----------------------------------
+$ cat /proc/sys/user/max_user_namespaces
+$ sudo sysctl user.max_user_namespaces=15000
+To make this change permanent, add the following line to /etc/sysctl.conf:
+user.max_user_namespaces=15000
+
 $ sysctl --all --pattern user_namespaces
 $ cat /etc/passwd
 
@@ -44,7 +54,9 @@ $ cat /etc/passwd
 ls /var/lib/containers
 ls ~/.local/share/containers
 
-That's plenty of namespaces, and it's probably what your distribution has set by default. If your distribution doesn't have that property or has it set very low, then you can create it by entering this text into the file /etc/sysctl.d/userns.conf:
+//setting namespaces
+That's plenty of namespaces, and it's probably what your distribution has set by default. If your distribution doesn't have that property or has it set very low, then you can create it by entering this text into the file 
+etc/sysctl.d/userns.conf:
 
 user.max_user_namespaces=28633
 Load that setting:
@@ -59,6 +71,10 @@ The three main configuration files are
   - storage.conf 
   - registries.conf. 
 
+	$ cat ~/.config/containers/containers.conf
+	[containers]
+	userns = "keep-id"
+
 storage.conf
 For storage.conf the order is 
 	/etc/containers/storage.conf
@@ -67,8 +83,30 @@ For storage.conf the order is
 registries
 Registry configuration is read in this order
 	/etc/containers/registries.conf
-	/etc/containers/registries.d/*
+	/etc/containers/registries.d/*   ----*/
 	${XDG_CONFIG_HOME}/containers/registries.conf
 
+//----------------------------------
+// differences between the modes
+//----------------------------------
 
+https://www.redhat.com/en/blog/rootless-podman-user-namespace-modes
 
+$ podman run --userns=keep-id -v ./test:/test:Z --rm ubi9 ls -l /test
+total 0 -rw-r--r--. 1 dwalsh dwalsh 0 Dec 29 12:20 foobar
+
+$ podman run --userns=auto -v ./test:/test:Z --rm ubi9 ls -l /test
+total 0 -rw-r--r--. 1 nobody nobody 0 Dec 29 12:20 foobar
+
+$ podman run --userns=nomap -v ./test:/test:Z --rm ubi9 ls -l /test
+total 0 -rw-r--r--. 1 nobody nobody 0 Dec 29 12:20 foobar
+
+$ podman run --userns="" -v ./test:/test:Z --rm ubi9 touch /test/foobar
+
+$ podman run --userns=keep-id -v ./test:/test:Z --rm ubi9 touch /test/foobar
+
+$ podman run --userns=auto -v ./test:/test:Z --rm ubi9 touch /test/foobar
+touch: cannot touch '/test/foobar': Permission denied
+
+$ podman run --userns=nomap -v ./test:/test:Z --rm ubi9 touch /test/foobar
+touch: cannot touch '/test/foobar': Permission denied
