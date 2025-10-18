@@ -3,18 +3,43 @@ source llindex/bin/activate
 
 uv pip install openai
 uv pip install llama-index
-
 uv pip install llama-index-vector-stores-postgres
-
 uv pip install llama-index-readers-file
-
 uv pip install llama-index-embeddings-huggingface
-
 uv pip install 'markitdown[all]'
-
 uv pip install llama-index-embeddings-huggingface
-
 uv pip install llama-index-vector-stores-postgres
+
+#web services
+fastapi
+uvicorn
+python-multipart
+python-dotenv
+
+#async io
+#litserve
+aiofiles
+boto3
+
+# document parsers 
+pymupdf
+
+
+# opencv-python==4.8.0.74
+# opencv-contrib-python
+# opencv-python-headless
+
+llama-index-core 
+langchain-community
+# unstructured[all-docs]
+
+langchain-excel-loader
+openpyxl
+
+extract_msg
+llama-index-readers-file
+llama-index-llms-openai
+python-pptx
 
 
 raw json
