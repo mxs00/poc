@@ -11,3 +11,7 @@ def calc_hash(data):
 	sha256 = hashlib.sha256()
 	sha256.update(data)
 	return sha256.hexdigest()
+
+
+payload["test_buffer"] = await manial.read()
+calc_hash(payload["test_buffer"])
